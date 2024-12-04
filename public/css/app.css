@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.custom-list {
+    list-style-type: none;
+    /* Remove default bullets */
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.custom-list li::before {
+    content: '';
+    display: block;
+    width: 40px;
+    /* Adjust size as needed */
+    height: 40px;
+    padding: 4px;
+    margin-right: 16px;
+    /* Space between icon and text */
+    background-image: url("../assets/svg/SunList.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+@media screen and (max-width: 768px) {
+    .custom-list li::before {
+        width: 32px;
+        height: 32px;
+        padding: 12px;
+        margin-right: 12px;
+    }
+}
+
+.sidebar-item {
+    color: #1E3A8A; /* Warna teks default */
+}
+
+.sidebar-item.active {
+    background-color: #F4F8FB; /* Warna saat dipilih */
+    color: #1E3A8A; /* Warna teks saat dipilih */
+}
+
+.sidebar-item:hover {
+    background-color: #D9ECFA; /* Warna saat hover */
+    color: #1E3A8A; /* Warna teks saat hover */
+}
