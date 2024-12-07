@@ -17,27 +17,29 @@ Route::get('/user/jenis_kulit', [UserController::class, 'jenis_kulit'])->name('u
 
 Route::get('/', [UserController::class, 'homepage'])->name('guest.index');
 
-Route::get('/login', [UserController::class, 'login'])->name('auth.login');
-Route::get('/register', [UserController::class, 'register'])->name('auth.register');
-
-Route::get('/fitzpatrick/1', [UserController::class, 'fitzpatrick_test_intro1'])->name('fitzpatrick_test.fitzpatrick1');
-Route::get('/fitzpatrick/2', [UserController::class, 'fitzpatrick_test_intro2'])->name('fitzpatrick_test.fitzpatrick2');
-Route::get('/fitzpatrick', [UserController::class, 'fitzpatrick_test'])->name('fitzpatrick_test.fitzpatrick3');
-
-Route::get('/', [UserController::class, 'homepage'])->name('guest.index');
-
-Route::get('/login', [UserController::class, 'login'])->name('auth.login');
-Route::get('/register', [UserController::class, 'register'])->name('auth.register');
+Route::get('login', [UserController::class, 'login'])->name('auth.login');
+Route::post('login', [UserController::class, 'login_action'])->name('auth.login_action');
+Route::get('register', [UserController::class, 'register'])->name('auth.register');
+Route::post('register', [UserController::class, 'register_action'])->name('auth.register_action');
 
 Route::get('/fitzpatrick/1', [UserController::class, 'fitzpatrick_test_intro1'])->name('fitzpatrick_test.fitzpatrick1');
 Route::get('/fitzpatrick/2', [UserController::class, 'fitzpatrick_test_intro2'])->name('fitzpatrick_test.fitzpatrick2');
 Route::get('/fitzpatrick', [UserController::class, 'fitzpatrick_test'])->name('fitzpatrick_test.fitzpatrick3');
 
 // login register, logout
-Route::get('register', [UserController::class, 'register'])->name('register');
-Route::post('register', [UserController::class, 'register_action'])->name('register.action');
-Route::get('login', [UserController::class, 'login'])->name('login');
-Route::post('login', [UserController::class, 'login_action'])->name('login.action');
-// Route::get('password', [UserController::class, 'password'])->name('password');
-// Route::post('password', [UserController::class, 'password_action'])->name('password.action');
-Route::get('logout', [UserController::class, 'logout'])->name('logout');
+// Route::get('register', [UserController::class, 'register'])->name('register');
+// Route::post('register', [UserController::class, 'register_action'])->name('register.action');
+// Route::get('login', [UserController::class, 'login'])->name('login');
+// Route::post('login', [UserController::class, 'login_action'])->name('login.action');
+// // Route::get('password', [UserController::class, 'password'])->name('password');
+// // Route::post('password', [UserController::class, 'password_action'])->name('password.action');
+// Route::get('logout', [UserController::class, 'logout'])->name('logout');
+
+//Route::get('/', [UserController::class, 'homepage'])->name('guest.index');
+
+// Route::get('/login', [UserController::class, 'login'])->name('auth.login');
+// Route::get('/register', [UserController::class, 'register'])->name('auth.register');
+
+// Route::get('/fitzpatrick/1', [UserController::class, 'fitzpatrick_test_intro1'])->name('fitzpatrick_test.fitzpatrick1');
+// Route::get('/fitzpatrick/2', [UserController::class, 'fitzpatrick_test_intro2'])->name('fitzpatrick_test.fitzpatrick2');
+// Route::get('/fitzpatrick', [UserController::class, 'fitzpatrick_test'])->name('fitzpatrick_test.fitzpatrick3');

@@ -71,78 +71,46 @@ class UserController extends Controller
         return view('auth.login');
     }
 
+    public function login_action(Request $request)
+    {
+        $request->validate([
+            'email' => 'required',
+            'password' => 'required',
+        ]);
+    
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            $request->session()->regenerate();
+            return redirect()->route('user.index'); // Mengarahkan ke rute 'user.index'
+        }
+    
+        return back()->withErrors([
+            'password' => 'Wrong email or password',
+        ]);
+    }
+
     public function register()
     {
         return view('auth.register');
-    }
-
-    // bagian login register dkk
-    public function register()
-    {
-        $data['title'] = 'Register';
-        return view('user/register', $data);
     }
 
     public function register_action(Request $request)
     {
         $request->validate([
             'name' => 'required',
-            'username' => 'required|unique:tb_user',
+            'email' => 'required|unique:tb_user',
             'password' => 'required',
             'password_confirm' => 'required|same:password',
         ]);
 
         $user = new User([
             'name' => $request->name,
-            'username' => $request->username,
+            'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
         $user->save();
 
-        return redirect()->route('login')->with('success', 'Registration success. Please login!');
+        return redirect()->route('auth.login')->with('success', 'Registration success. Please login!');
     }
-
-
-    public function login()
-    {
-        $data['title'] = 'Login';
-        return view('user/login', $data);
-    }
-
-    public function login_action(Request $request)
-    {
-        $request->validate([
-            'username' => 'required',
-            'password' => 'required',
-        ]);
-        if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
-            $request->session()->regenerate();
-            return redirect()->intended('/');
-        }
-
-        return back()->withErrors([
-            'password' => 'Wrong username or password',
-        ]);
-    }
-
-    // public function password()
-    // {
-    //     $data['title'] = 'Change Password';
-    //     return view('user/password', $data);
-    // }
-
-    // public function password_action(Request $request)
-    // {
-    //     $request->validate([
-    //         'old_password' => 'required|current_password',
-    //         'new_password' => 'required|confirmed',
-    //     ]);
-    //     $user = User::find(Auth::id());
-    //     $user->password = Hash::make($request->new_password);
-    //     $user->save();
-    //     $request->session()->regenerate();
-    //     return back()->with('success', 'Password changed!');
-    // }
 
     public function logout(Request $request)
     {

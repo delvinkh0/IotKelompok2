@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UVise - Masuk</title>
-
     @vite('public/css/app.css')
 </head>
 <body class="bg-gray-50 flex items-center justify-center min-h-screen">
@@ -13,11 +12,21 @@
             <img src="{{ asset('assets/svg/UVise.svg') }}" alt="UVise Logo" class="md:h-8 h-6">
         </a>
     </nav>
+    
     <div class="flex items-center justify-between rounded-lg overflow-hidden">
         <div class="p-6">
-            <form>
-                <div class="flex flex-col gap-3">
+            <form action="{{ route('auth.login_action') }}" method="POST">
+                @csrf
+                <div class="flex flex-col gap-3"></div>
                     <div class="border-b border-gray-900/10 pb-6">
+                        @if(session('success'))
+                        <p class="alert alert-success">{{ session('success') }}</p>
+                        @endif
+                        @if($errors->any())
+                        @foreach($errors->all() as $err)
+                        <p class="alert alert-danger">{{ $err }}</p>
+                        @endforeach
+                        @endif
                         <h2 class="text-lg font-semibold text-gray-900 text-center">MASUK</h2>
                         <p class="mt-1 text-sm text-gray-600 text-center">Silakan isi informasi untuk masuk ke akun anda.</p>
 
@@ -40,7 +49,7 @@
                     </div>
 
                     <div class="flex justify-center">
-                        <button type="submit" class="rounded-md" style="background: var(--Primary-Primary, #2D546E); border-radius: 10px; color: white; padding: 0.5rem 1rem; text-sm font-semibold shadow-sm hover:bg-opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">Daftar</button>
+                        <button class="rounded-md" style="background: var(--Primary-Primary, #2D546E); border-radius: 10px; color: white; padding: 0.5rem 1rem; text-sm font-semibold shadow-sm hover:bg-opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">Masuk</button>
                     </div>
 
                     <div class="text-center mt-4">
