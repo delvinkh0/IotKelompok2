@@ -88,7 +88,7 @@
             <p>Apakah Anda yakin ingin keluar?</p>
             <div class="flex justify-end mt-4">
                 <button onclick="closeLogoutModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md mr-2">Batal</button>
-                <button onclick="logout()" class="bg-red-600 text-white px-4 py-2 rounded-md">Keluar</button>
+                <a href="{{ route("guest.index") }}" class="bg-red-600 text-white px-4 py-2 rounded-md">Keluar</a>
             </div>
         </div>
     </div>
