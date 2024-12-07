@@ -23,7 +23,7 @@
                             <div class="flex items-center justify-between">
                                 <div class="title-desc flex flex-col gap-2">
                                     <h3 class="text-base font-light">UV Index</h3>
-                                    <p class="text-3xl font-semibold">5.2</p>
+                                    <p class="text-3xl font-semibold">{{ $latestReading->sensor_reading }}</p>
                                 </div>
 
                                 <div class="md:hidden block">
@@ -65,7 +65,7 @@
                 <div class="flex items-center justify-between">
                     <div class="title-desc flex flex-col gap-2">
                         <h3 class="text-base font-light">Suhu</h3>
-                        <p class="text-3xl font-semibold">38°C</p>
+                        <p class="text-3xl font-semibold">{{ $latestReading->temperature }}°C</p>
                     </div>
 
                     <img src="{{ asset('./assets/svg/Dashboard/Temperature.svg') }}" alt="Temperature Icon" class="w-24">
@@ -76,7 +76,7 @@
                 <div class="flex items-center justify-between">
                     <div class="title-desc flex flex-col gap-2">
                         <h3 class="text-base font-light">Kelembaban</h3>
-                        <p class="text-3xl font-semibold">45.41%</p>
+                        <p class="text-3xl font-semibold">{{ $latestReading->humidity }}%</p>
                     </div>
 
                     <img src="{{ asset('./assets/svg/Dashboard/Humidity.svg') }}" alt="Humidity Icon" class="w-24">
@@ -86,8 +86,8 @@
             <div class="sm:col-span-6 col-span-12 bg-surface-primaryHighContainer px-4 py-6 rounded-md">
                 <div class="flex items-center justify-between">
                     <div class="title-desc flex flex-col gap-2">
-                        <h3 class="text-base font-light">Kualitas Air (kOHMs)</h3>
-                        <p class="text-3xl font-semibold">52.37</p>
+                        <h3 class="text-base font-light">Kualitas Udara (kOHMs)</h3>
+                        <p class="text-3xl font-semibold">{{ $latestReading->gas }}</p>
                     </div>
 
                     <img src="{{ asset('./assets/svg/Dashboard/Air.svg') }}" alt="Air Quality Icon" class="w-24">
@@ -98,7 +98,7 @@
                 <div class="flex items-center justify-between">
                     <div class="title-desc flex flex-col gap-2">
                         <h3 class="text-base font-light">Tekanan Udara (hPa)</h3>
-                        <p class="text-3xl font-semibold">1003.63</p>
+                        <p class="text-3xl font-semibold">{{ $latestReading->pressure }}</p>
                     </div>
 
                     <img src="{{ asset('./assets/svg/Dashboard/Pressure.svg') }}" alt="Air Pressure Icon" class="w-24">

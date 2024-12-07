@@ -22,7 +22,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($readings as $reading)
+            @foreach ($latestReading as $reading)
                 <tr>
                     <td>{{ $reading->id }}</td>
                     <td>{{ $reading->sensor_reading }}</td>
