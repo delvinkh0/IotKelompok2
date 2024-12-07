@@ -46,10 +46,6 @@
                         <label class="block text-gray-700" for="email">Email</label>
                         <input class="border border-gray-300 rounded w-full p-2" id="email" type="email" value="john.doe@example.com"/>
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-700" for="phone">Nomor Telepon</label>
-                        <input class="border border-gray-300 rounded w-full p-2" id="phone" type="tel" value="08123456789"/>
-                    </div>
                     <button class="text-right bg-blue-500 text-white px-4 py-2 rounded" type="submit">
                         Simpan Perubahan
                     </button>

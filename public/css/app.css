@@ -47,3 +47,139 @@
     background-color: #D9ECFA; /* Warna saat hover */
     color: #1E3A8A; /* Warna teks saat hover */
 }
+
+/* Homepage */
+
+.bg-custom {
+    background-color: #FDFDFC
+}
+
+.button {
+    padding: 16px 30px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+
+}
+.button.tes {
+    background-color: #2D546E;
+    color: white;
+}
+
+.text-background {
+    background-image: url('../assets/img/Awan/awan10.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #2D546E;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* End Homepage */
+
+/* Auth */
+body.fitzpatrick_test {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-image: url('../assets/img/Awan/awan.png');
+    background-size: auto;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.input-custom {
+    width: 411px; /* Lebar */
+    height: 37px; /* Tinggi */
+    flex-shrink: 0; /* Mencegah penyusutan */
+    border-radius: 10px; /* Radius border */
+    border: 1px solid #2D546E; /* Warna border */
+}
+
+/* Fitzpatrick */
+.option-button {
+    width: 224px;
+    height: 64px;
+    padding: 0;
+    border-radius: 20px;
+    border: 1px solid #659CBF;
+    background-color: #FDFDFC;
+    color: #1E1F24;
+    font-size: 16px;
+    line-height: 18px;
+    text-align: center;
+    font-weight: normal;
+    opacity: 1;
+    transition: background-color 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.option-button:hover {
+    background-color: #E6F0F6;
+}
+.option-button.selected {
+    background-color: #659CBF;
+    color: white;
+}
+.question-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+    border-radius: 10px;
+}
+.question-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #37739A;
+    text-align: left;
+    margin-bottom: 16px;
+}
+.options-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.section-title {
+    color: #37739A;
+    font-size: 24px;
+    font-weight: 600;
+    margin-top: 10px;
+}
+.submit-button {
+    width: 100%;
+    height: 64px;
+    border-radius: 20px;
+    border: none;
+    background-color: #659CBF;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-bottom: 50px;
+    margin-top: 20px;
+}
+.submit-button:hover {
+    background-color: #4A8BAF;
+}
+
+/* Fitzpatrick */
+.text-background-fitzpatrick {
+    background-image: url('../assets/img/Awan/awan2.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 20px;
+    border-radius: 8px; /* Membuat sudut membulat */
+    color: rgb(0, 0, 0); /* Mengubah warna teks agar kontras dengan latar belakang */
+    height: 200px; /* Atur tinggi elemen agar gambar dapat ditampilkan dengan baik */
+    display: flex; /* Menggunakan Flexbox untuk memusatkan konten */
+    flex-direction: column; /* Mengatur arah konten ke bawah */
+    justify-content: center; /* Memusatkan konten secara vertikal */
+    align-items: center; /* Memusatkan konten secara horizontal */
+}
