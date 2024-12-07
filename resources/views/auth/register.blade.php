@@ -10,7 +10,7 @@
 
 <body class="bg-gray-50 flex items-center justify-center min-h-screen">
     <nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-4 bg-white px-6">
-        <a href="{{ asset('guest.index') }}" class="flex items-center">
+        <a href="{{ route('guest.index') }}" class="flex items-center">
             <img src="{{ asset('assets/svg/UVise.svg') }}" alt="UVise Logo" class="md:h-8 h-6">
         </a>
     </nav>
