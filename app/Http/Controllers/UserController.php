@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\SkinTypeResult;
 
 class UserController extends Controller
 {
@@ -92,6 +93,60 @@ class UserController extends Controller
     {
         return view('fitzpatrick_test.fitzpatrick3');
     }
+
+    public function submit_fitzpatrick_test(Request $request)
+    {
+        try {
+            // Validate all questions
+            $data = $request->validate([
+                'question1' => 'required|integer|between:0,4',
+                'question2' => 'required|integer|between:0,4',
+                'question3' => 'required|integer|between:0,4',
+                'question4' => 'required|integer|between:0,4',
+                'question5' => 'required|integer|between:0,4',
+                'question6' => 'required|integer|between:0,4',
+                'question7' => 'required|integer|between:0,4',
+                'question8' => 'required|integer|between:0,4',
+                'question9' => 'required|integer|between:0,4',
+                'question10' => 'required|integer|between:0,4',
+            ]);
+
+            // Calculate the total score
+            $totalScore = array_sum($data);
+
+            // Determine the skin type based on the total score
+            $skin_type = match (true) {
+                $totalScore <= 6 => 1,
+                $totalScore <= 13 => 2,
+                $totalScore <= 20 => 3,
+                $totalScore <= 27 => 4,
+                $totalScore <= 34 => 5,
+                $totalScore >= 35 => 6
+            };
+
+            $resultData = [
+                'skin_type' => $skin_type,
+                'test_result' => $totalScore,
+                'user_id' => Auth::id(), 
+            ];
+    
+    
+            // Save the result in the skin_type_result table
+            SkinTypeResult::create($resultData);
+    
+            // Return the result view with the total score and skin type
+            return redirect()->route('user.index')->with('success', 'Fitzpatrick test results have been successfully saved! Your skin type is ' . $skin_type . '.');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Catch validation errors and return them to the user
+            return back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            // Catch any other exceptions
+            return back()->with('error', 'An error occurred while submitting the test: ' . $e->getMessage())->withInput();
+        }
+    }
+
+
 
     // No Need Auth
     public function homepage()

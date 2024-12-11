@@ -48,4 +48,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function skinTypeResults()
+    {
+        return $this->hasMany(SkinTypeResult::class, 'user_id', 'user_id');
+    }
 }

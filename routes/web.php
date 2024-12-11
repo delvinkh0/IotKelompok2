@@ -25,6 +25,7 @@ Route::post('register', [UserController::class, 'register_action'])->name('auth.
 Route::get('/fitzpatrick/1', [UserController::class, 'fitzpatrick_test_intro1'])->name('fitzpatrick_test.fitzpatrick1');
 Route::get('/fitzpatrick/2', [UserController::class, 'fitzpatrick_test_intro2'])->name('fitzpatrick_test.fitzpatrick2');
 Route::get('/fitzpatrick', [UserController::class, 'fitzpatrick_test'])->name('fitzpatrick_test.fitzpatrick3');
+Route::post('/fitzpatrick/submit', [UserController::class, 'submit_fitzpatrick_test'])->name('fitzpatrick_test.submit');
 
 // login register, logout
 // Route::get('register', [UserController::class, 'register'])->name('register');

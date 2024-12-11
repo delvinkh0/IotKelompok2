@@ -2,6 +2,16 @@
 
 @section('content')
     <main class="grid grid-cols-12 py-4 lg:px-12 md:px-6 px-4 gap-3">
+        <div class="col-span-12">
+            @if(session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <p class="alert alert-success">
+                        {{ session('success') }}
+                    </p>
+                </div>
+            @endif
+        </div>
+
         <div class="lg:col-span-8 col-span-12 grid grid-cols-12 gap-3">
             <div class="sm:col-span-8 col-span-12 grid grid-cols-1 gap-3">
                 <div class="col-span-1 bg-primary-100 rounded-md relative overflow-hidden">
