@@ -11,6 +11,67 @@ use App\Models\SkinTypeResult;
 
 class UserController extends Controller
 {
+    // Helper function to get skin type info
+    private function getSkinTypeInfo($userId)
+    {
+        $latestSkinType = DB::table('skin_type_result')
+            ->where('user_id', $userId)
+            ->orderBy('updated_at', 'desc')
+            ->first();
+
+        if (is_null($latestSkinType)) {
+            $latestSkinType = (object) [
+                'id' => null,
+                'skin_type' => 0,
+                'user_id' => $userId,
+                'created_at' => null,
+                'updated_at' => null,
+            ];
+        }
+
+        $skinTypeUser = $latestSkinType->skin_type;
+        $skinTypeScore = $latestSkinType->test_result;
+
+        $skinTypeText = match (true) {
+            $skinTypeUser == 1 => "Kulit Putih Pucat",
+            $skinTypeUser == 2 => "Kulit Putih",
+            $skinTypeUser == 3 => "Kulit Cokelat Muda",
+            $skinTypeUser == 4 => "Kulit Cokelat Sedang",
+            $skinTypeUser == 5 => "Kulit Cokelat Gelap",
+            $skinTypeUser == 6 => "Kulit Sangat Gelap Hingga Hitam Pekat",
+            default => "Tipe Kulit ___",
+        };
+
+        $skinTypeTitle =  match (true) {
+            $skinTypeUser == 1 => "Tipe Kulit I",
+            $skinTypeUser == 2 => "Tipe Kulit II",
+            $skinTypeUser == 3 => "Tipe Kulit III",
+            $skinTypeUser == 4 => "Tipe Kulit IV",
+            $skinTypeUser == 5 => "Tipe Kulit V",
+            $skinTypeUser == 6 => "Tipe Kulit VI",
+            default => "Tipe Kulit ___",
+        };
+
+        $skinTypeDescription =  match (true) {
+            $skinTypeUser == 1 => "Kulit tipe ini selalu terbakar, tidak pernah menggelap, sangat sensitif terhadap UV.",
+            $skinTypeUser == 2 => "Kulit tipe ini mudah terbakar, sedikit menggelap, sensitif terhadap UV.",
+            $skinTypeUser == 3 => "Kulit tipe ini terkadang terbakar, sedikit sensitif terhadap UV.",
+            $skinTypeUser == 4 => "Kulit tipe ini jarang terbakar, minim sensitif terhadap UV.",
+            $skinTypeUser == 5 => "Kulit tipe ini jarang terbakar, tidak sensitif terhadap UV.",
+            $skinTypeUser == 6 => "Kulit tipe ini tidak terbakar, sangat gelap, tidak sensitif terhadap UV.",
+            default => "Tipe kulit belum diketahui, ambil tes Fitzpatrick untuk mengetahui tipe kulit Anda.",
+        };
+
+        return [
+            'latestSkinType' => $latestSkinType,
+            'skinTypeUser' => $skinTypeUser,
+            'skinTypeTitle' => $skinTypeTitle,
+            'skinTypeDescription' => $skinTypeDescription,
+            'skinTypeScore' => $skinTypeScore,
+            'skinTypeText' => $skinTypeText,
+        ];
+    }
+
     // Auth
     public function index()
     {
@@ -65,17 +126,35 @@ class UserController extends Controller
             11 => "Skin damage can happen in minutes. Avoid direct sun; wear full protection, including SPF 50+.",
         };
 
-        return view('user.index', compact('latestReading', 'uvIndex', 'title', 'description'));
+        $userId = Auth::id();
+
+        // Get skin type info
+        $skinTypeInfo = $this->getSkinTypeInfo($userId);
+
+        return view('user.index', array_merge([
+            'latestReading' => $latestReading,
+            'uvIndex' => $uvIndex,
+            'title' => $title,
+            'description' => $description,
+        ], $skinTypeInfo));
     }
 
     public function profileIndex()
     {
-        return view('user.profile');
+        $userId = Auth::id();
+
+        $skinTypeInfo = $this->getSkinTypeInfo($userId);
+
+        return view('user.profile', $skinTypeInfo);
     }
 
     public function jenis_kulit()
     {
-        return view('user.jenis_kulit');
+        $userId = Auth::id();
+
+        $skinTypeInfo = $this->getSkinTypeInfo($userId);
+
+        return view('user.jenis_kulit', $skinTypeInfo);
     }
 
     // Fitzpatrick_Test
@@ -127,13 +206,13 @@ class UserController extends Controller
             $resultData = [
                 'skin_type' => $skin_type,
                 'test_result' => $totalScore,
-                'user_id' => Auth::id(), 
+                'user_id' => Auth::id(),
             ];
-    
-    
+
+
             // Save the result in the skin_type_result table
             SkinTypeResult::create($resultData);
-    
+
             // Return the result view with the total score and skin type
             return redirect()->route('user.index')->with('success', 'Fitzpatrick test results have been successfully saved! Your skin type is ' . $skin_type . '.');
 
@@ -146,6 +225,11 @@ class UserController extends Controller
         }
     }
 
+    public function resetTimer(Request $request)
+    {
+        session(['timer_reset_at' => now()]);
+        return response()->json(['message' => 'Timer reset successfully.']);
+    }
 
 
     // No Need Auth
@@ -200,6 +284,28 @@ class UserController extends Controller
         $user->save();
 
         return redirect()->route('auth.login')->with('success', 'Registration success. Please login!');
+    }
+
+    public function update_user_info(Request $request)
+    {
+        // Validate form data
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . Auth::id(), // Keep current user's email valid
+        ]);
+
+        // Get the authenticated user
+        $user = Auth::user();
+
+        // Update user without changing the image
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        // dd($request->all());
+        $user->save();
+
+        // Redirect back with success message
+        return redirect()->route('user.profile')->with('success', 'Profile updated successfully!');
     }
 
     public function logout(Request $request)

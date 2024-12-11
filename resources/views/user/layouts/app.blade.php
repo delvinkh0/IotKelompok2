@@ -30,8 +30,8 @@
                 <button type="button"
                     class="w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 focus:ring-1 focus:ring-inset focus:ring-gray-100 hover:bg-gray-50 flex items-center justify-center gap-2"
                     id="menu-button" aria-expanded="false" aria-haspopup="true" onclick="toggleDropdown()">
-                    <img src="{{ asset('./assets/img/Profile.png') }}" alt="Profile" class="md:h-8 h-6 rounded-full border-2 border-primary-400">
-                    <p class="inline md:text-base text-sm font-medium">John Doe</p>
+                    <img src="../../assets/img/Profile/Profile-SkinType{{ $skinTypeUser }}.png" alt="Profile" class="md:h-8 h-6 rounded-full border-2 border-primary-400">
+                    <p class="inline md:text-base text-sm font-medium">{{ auth()->user()->name }}</p>
                     <svg class="-mr-1 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
                         data-slot="icon">
                         <path fill-rule="evenodd"
@@ -45,17 +45,17 @@
                 role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                 <div class="p-2" role="none">
                     <a href="{{ route('user.profile') }}" class="block p-2 text-sm text-gray-700 flex gap-4 rounded-md border-[0.5px] border-border-border" role="menuitem" tabindex="-1" id="menu-item-0">
-                        <img src={{ asset('./assets/img/Profile.png') }} alt="Profile" class="md:h-12 h-8 rounded-full border-2 border-primary-400">
+                        <img src="../../assets/img/Profile/Profile-SkinType{{ $skinTypeUser }}.png" alt="Profile" class="md:h-12 h-8 rounded-full border-2 border-primary-400">
                         <div class="flex flex-col gap-2 w-full min-w-0">
                             <div class="flex flex-col gap-[2px] w-full min-w-0">
-                                <p class="text-base font-medium">John Doe</p>
-                                <p class="text-sm text-ellipsis truncate">johndoe@gmail.com</p>
+                                <p class="text-base font-medium">{{ auth()->user()->name }}</p>
+                                <p class="text-sm text-ellipsis truncate">{{ auth()->user()->email }}</p>
                             </div>
                             <div class="flex gap-1 bg-surface-secondaryMediumContainer py-1 px-2 rounded-md items-end w-fit">
                                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" class="pt-[1px]">
                                     <circle cx="6" cy="6" r="6" class="fill-yellow-900" />
                                 </svg>
-                                <p class="text-xs font-medium">Tipe Kulit III</p>
+                                <p class="text-xs font-medium">{{ $skinTypeTitle }}</p>
                             </div>
                         </div>
                     </a>
@@ -88,10 +88,77 @@
             <p>Apakah Anda yakin ingin keluar?</p>
             <div class="flex justify-end mt-4">
                 <button onclick="closeLogoutModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md mr-2">Batal</button>
-                <a href="{{ route("guest.index") }}" class="bg-red-600 text-white px-4 py-2 rounded-md">Keluar</a>
+                <a href="{{ route("guest.index") }}" class="bg-red-900 text-white px-4 py-2 rounded-md">Keluar</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="fitzpatrickModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white rounded-lg p-6">
+            <h2 class="text-lg font-bold mb-4">Konfirmasi Tes Ulang</h2>
+            <p>Apakah Anda yakin ingin tes ulang? Hasil tes yang akan dipakai adalah yang terbaru.</p>
+            <div class="flex justify-end mt-4">
+                <button onclick="closeFitzpatrickModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md mr-2">Batal</button>
+                <a href="{{ route("fitzpatrick_test.fitzpatrick1") }}" class="bg-blue-900 text-white px-4 py-2 rounded-md">Lanjut Tes</a>
             </div>
         </div>
     </div>
 
     <script src="{{ asset('js/app.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const timerDisplay = document.querySelector('.sunscreen-time');
+            const resetButton = document.querySelector('.button-reset-timer');
+
+            const duration = 0.1 * 60; // 48 minutes in seconds
+            let endTime = localStorage.getItem('timerEndTime')
+                ? parseInt(localStorage.getItem('timerEndTime'))
+                : Date.now() + duration * 1000;
+
+            function sendNotification() {
+                if (Notification.permission === 'granted') {
+                    new Notification('UVise Reminder', {
+                        body: 'Waktunya aplikasi ulang sunscreen!',
+                        icon: '{{ asset("assets/img/favicon1.ico") }}' // Optional: replace with your notification icon
+                    });
+                }
+            }
+
+            function updateTimer() {
+                const remaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+                const hours = Math.floor(remaining / 3600); // Calculate hours
+                const minutes = Math.floor((remaining % 3600) / 60); // Remaining minutes
+                const seconds = remaining % 60; // Remaining seconds
+
+                timerDisplay.textContent = `${hours} Jam ${minutes} Menit ${seconds < 10 ? '0' : ''}${seconds} Detik`;
+
+                if (remaining <= 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.textContent = 'Waktunya aplikasi ulang sunscreen!';
+                }
+            }
+
+            const timerInterval = setInterval(updateTimer, 1000);
+            updateTimer();
+
+            resetButton.addEventListener('click', function () {
+                fetch('{{ route('reset.timer') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data.message);
+                        endTime = Date.now() + duration * 1000;
+                        localStorage.setItem('timerEndTime', endTime);
+                        updateTimer();
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+    </script>
 </body>
+</html>

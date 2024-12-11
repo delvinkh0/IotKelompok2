@@ -25,6 +25,14 @@ function closeLogoutModal() {
     document.getElementById('logoutModal').classList.add('hidden');
 }
 
+function openFitzpatrickModal() {
+    document.getElementById('fitzpatrickModal').classList.remove('hidden');
+}
+
+function closeFitzpatrickModal() {
+    document.getElementById('fitzpatrickModal').classList.add('hidden');
+}
+
 function logout() {
     window.location.href = 'login.html'; // Ganti dengan URL halaman login Anda
 }

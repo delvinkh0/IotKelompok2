@@ -18,9 +18,9 @@
                     <div class="flex sm:flex-row flex-col sm:justify-between items-center sm:gap-2 gap-6 py-6 md:px-4 px-2 z-1 relative">
                         <div class="title-desc flex flex-col gap-2">
                             <h3 class="text-base font-light sm:text-left text-center">Aplikasikan ulang sunscreen dalam</h3>
-                            <p class="text-3xl font-semibold sm:text-left text-center">48 Menit</p>
+                            <p class="sunscreen-time text-3xl font-semibold sm:text-left text-center">48 Menit</p>
                         </div>
-                        <button class="bg-primary-primary hover:bg-primary-dark p-3 rounded-md text-primary-onPrimary w-fit">Gunakan Ulang Sunscreen</button>
+                        <button class="bg-primary-primary hover:bg-primary-dark p-3 rounded-md text-primary-onPrimary w-fit button-reset-timer">Gunakan Ulang Sunscreen</button>
                     </div>
 
                     <img src="{{ asset('./assets/img/Sunscreens.png') }}" alt="Sunscreen" class="absolute -bottom-4 absolute m-auto left-0 right-0 w-3/5 z-0">
@@ -62,12 +62,12 @@
             </div>
 
             <div class="sm:col-span-4 col-span-12 bg-yellow-200 px-4 pb-0 pt-6 rounded-md bg-cover h-full" style="background-image: url(./assets/img/Pattern/Pattern.png);">
-                <div class="flex sm:flex-col flex-row sm:gap-3 gap-2 justify-between h-full sm:items-center sm:items-end items-start">
+                <div class="flex sm:flex-col flex-row sm:gap-3 gap-2 justify-between h-full sm:items-center items-end">
                     <div class="title-desc flex flex-col gap-2 items-start h-max pb-6">
-                        <h3 class="text-xl font-medium sm:text-center text-left w-full">Tipe Kulit <span class="tipe-kulit">III</span></h3>
-                        <p class="text-sm font-light sm:text-center text-left leading-6 md:px-4">Kamu mampu bertahan di luar ruangan selama kira-kira 2 jam pada range UV 5 - 7</p>
+                        <h3 class="text-xl font-medium sm:text-center text-left w-full">{{ $skinTypeTitle }}</h3>
+                        <p class="text-sm font-light sm:text-center text-left leading-6 md:px-4">{{ $skinTypeDescription }}</p>
                     </div>
-                    <img src="./assets/svg/SkinType/SkinType3.svg" alt="Skin Type 3 Person" class="sm:h-full h-fit sm:max-h-80">
+                    <img src="./assets/svg/SkinType/SkinType{{ $skinTypeUser }}.svg" alt="Skin Type 3 Person" class="sm:h-full h-fit sm:max-h-80">
                 </div>
             </div>
 
@@ -161,3 +161,4 @@
         </div>
     </main>
 @endsection
+
