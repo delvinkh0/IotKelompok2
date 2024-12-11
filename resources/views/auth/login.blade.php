@@ -12,7 +12,7 @@
             <img src="{{ asset('assets/svg/UVise.svg') }}" alt="UVise Logo" class="md:h-8 h-6">
         </a>
     </nav>
-    
+
     <div class="flex items-center justify-between rounded-lg overflow-hidden">
         <div class="p-6">
             <form action="{{ route('auth.login_action') }}" method="POST">
@@ -20,12 +20,21 @@
                 <div class="flex flex-col gap-3"></div>
                     <div class="border-b border-gray-900/10 pb-6">
                         @if(session('success'))
-                        <p class="alert alert-success">{{ session('success') }}</p>
+                            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                                <p class="alert alert-success">
+                                    {{ session('success') }}
+                                </p>
+                            </div>
                         @endif
+
                         @if($errors->any())
-                        @foreach($errors->all() as $err)
-                        <p class="alert alert-danger">{{ $err }}</p>
-                        @endforeach
+                            @foreach($errors->all() as $err)
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                                <p class="alert alert-danger">
+                                    {{ $err }}
+                                </p>
+                            </div>
+                            @endforeach
                         @endif
                         <h2 class="text-lg font-semibold text-gray-900 text-center">MASUK</h2>
                         <p class="mt-1 text-sm text-gray-600 text-center">Silakan isi informasi untuk masuk ke akun anda.</p>

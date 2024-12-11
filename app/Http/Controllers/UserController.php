@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash; 
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
 class UserController extends Controller
@@ -30,7 +30,41 @@ class UserController extends Controller
             ];
         }
 
-        return view('user.index', ['latestReading' => $latestReading]);
+        $sensorValue = $latestReading->sensor_reading;
+
+        // Map sensor readings to UV Index
+        $uvIndex = match (true) {
+            $sensorValue < 50 => 0,
+            $sensorValue <= 227 => 1,
+            $sensorValue <= 318 => 2,
+            $sensorValue <= 408 => 3,
+            $sensorValue <= 503 => 4,
+            $sensorValue <= 606 => 5,
+            $sensorValue <= 696 => 6,
+            $sensorValue <= 795 => 7,
+            $sensorValue <= 881 => 8,
+            $sensorValue <= 976 => 9,
+            $sensorValue <= 1079 => 10,
+            default => 11,
+        };
+
+        $title = match ($uvIndex) {
+            0, 1, 2 => "Minimal risk:",
+            3, 4, 5 => "Moderate risk:",
+            6, 7 => "High risk:",
+            8, 9, 10 => "Very high risk:",
+            11 => "Extreme risk:",
+        };
+
+        $description = match ($uvIndex) {
+            0, 1, 2 => "Safe for most skin types. Enjoy the outdoors safely; sunglasses optional.",
+            3, 4, 5 => "Some skin types may burn. Wear sunscreen and sunglasses if outdoors for long.",
+            6, 7 => "Likely to burn with extended exposure. Apply SPF 30+, wear a hat, and find shade midday.",
+            8, 9, 10 => "Skin burns quickly. Use SPF 50+, limit sun exposure 10 AM - 4 PM.",
+            11 => "Skin damage can happen in minutes. Avoid direct sun; wear full protection, including SPF 50+.",
+        };
+
+        return view('user.index', compact('latestReading', 'uvIndex', 'title', 'description'));
     }
 
     public function profileIndex()
@@ -77,12 +111,13 @@ class UserController extends Controller
             'email' => 'required',
             'password' => 'required',
         ]);
-    
+
+
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $request->session()->regenerate();
             return redirect()->route('user.index'); // Mengarahkan ke rute 'user.index'
         }
-    
+
         return back()->withErrors([
             'password' => 'Wrong email or password',
         ]);

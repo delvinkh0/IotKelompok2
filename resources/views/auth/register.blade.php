@@ -21,12 +21,21 @@
                 <div class="flex flex-col gap-3">
                     <div class="border-b border-gray-900/10 pb-6">
                         @if(session('success'))
-                        <p class="alert alert-success">{{ session('success') }}</p>
+                            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                                <p class="alert alert-success">
+                                    {{ session('success') }}
+                                </p>
+                            </div>
                         @endif
+
                         @if($errors->any())
-                        @foreach($errors->all() as $err)
-                        <p class="alert alert-danger">{{ $err }}</p>
-                        @endforeach
+                            @foreach($errors->all() as $err)
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                                <p class="alert alert-danger">
+                                    {{ $err }}
+                                </p>
+                            </div>
+                            @endforeach
                         @endif
                         <h2 class="text-lg font-semibold text-gray-900 text-center">DAFTAR</h2>
                         <p class="mt-1 text-sm text-gray-600 text-center">Silakan isi informasi berikut untuk mendaftar akun anda.</p>

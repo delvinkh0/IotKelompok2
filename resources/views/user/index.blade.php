@@ -23,7 +23,7 @@
                             <div class="flex items-center justify-between">
                                 <div class="title-desc flex flex-col gap-2">
                                     <h3 class="text-base font-light">UV Index</h3>
-                                    <p class="text-3xl font-semibold">{{ $latestReading->sensor_reading }}</p>
+                                    <p class="text-3xl font-semibold">{{ $uvIndex }}</p>
                                 </div>
 
                                 <div class="md:hidden block">
@@ -36,7 +36,7 @@
                                     </svg>
                                 </div>
                             </div>
-                            <div class="subtitle text-sm font-light leading-6"><span class="font-medium">Moderate risk:</span> Some skin types may burn. Wear sunscreen and sunglasses if outdoors for long.</div>
+                            <div class="subtitle text-sm font-light leading-6"><span class="font-medium">{{ $title }}</span> {{ $description }}</div>
                         </div>
                         <div class="md:block hidden">
                             <svg width="158" height="158" viewBox="0 0 158 158" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-36">
