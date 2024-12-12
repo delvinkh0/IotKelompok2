@@ -27,6 +27,14 @@
                             </div>
                         @endif
 
+                        @if(session('error'))
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                                <p class="alert alert-danger">
+                                    {{ session('error') }}
+                                </p>
+                            </div>
+                        @endif
+
                         @if($errors->any())
                             @foreach($errors->all() as $err)
                             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
@@ -36,6 +44,7 @@
                             </div>
                             @endforeach
                         @endif
+
                         <h2 class="text-lg font-semibold text-gray-900 text-center">MASUK</h2>
                         <p class="mt-1 text-sm text-gray-600 text-center">Silakan isi informasi untuk masuk ke akun anda.</p>
 
