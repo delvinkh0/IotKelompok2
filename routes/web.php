@@ -21,11 +21,11 @@ Route::middleware([EnsureUserIsAuthenticated::class])->group(function () {
 });
 
 // Rute yang tidak memerlukan autentikasi
-Route::get('/', [UserController::class, 'homepage'])->name('guest.index');
-Route::get('login', [UserController::class, 'login'])->name('auth.login');
-Route::post('login', [UserController::class, 'login_action'])->name('auth.login_action');
-Route::get('register', [UserController::class, 'register'])->name('auth.register');
-Route::post('register', [UserController::class, 'register_action'])->name('auth.register_action');
+    Route::get('/', [UserController::class, 'homepage'])->name('guest.index');
+    Route::get('login', [UserController::class, 'login'])->name('auth.login');
+    Route::post('login', [UserController::class, 'login_action'])->name('auth.login_action');
+    Route::get('register', [UserController::class, 'register'])->name('auth.register');
+    Route::post('register', [UserController::class, 'register_action'])->name('auth.register_action');
 
 // Route::get('/readings', [ReadingController::class, 'index']);
 // Route::get('/user', [UserController::class, 'index'])->name('user.index');
@@ -53,7 +53,9 @@ Route::post('register', [UserController::class, 'register_action'])->name('auth.
 // Route::post('login', [UserController::class, 'login_action'])->name('login.action');
 // // Route::get('password', [UserController::class, 'password'])->name('password');
 // // Route::post('password', [UserController::class, 'password_action'])->name('password.action');
-Route::get('logout', [UserController::class, 'logout'])->name('logout');
+Route::middleware([EnsureUserIsAuthenticated::class])->group(function () {
+    Route::get('logout', [UserController::class, 'logout'])->name('logout');
+});
 
 //Route::get('/', [UserController::class, 'homepage'])->name('guest.index');
 

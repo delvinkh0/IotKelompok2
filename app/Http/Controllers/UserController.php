@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Reading;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -75,7 +76,31 @@ class UserController extends Controller
     // Auth
     public function index()
     {
-        $latestReading = DB::table('readings')->orderBy('updated_at', 'desc')->first();
+        $latestReading = Reading::orderBy('updated_at', 'desc')->first();
+
+        $readings = Reading::all();
+
+        $chartData = $readings->map(function ($reading) {
+            $uvIndex = match (true) {
+                $reading->sensor_reading < 50 => 0,
+                $reading->sensor_reading <= 227 => 1,
+                $reading->sensor_reading <= 318 => 2,
+                $reading->sensor_reading <= 408 => 3,
+                $reading->sensor_reading <= 503 => 4,
+                $reading->sensor_reading <= 606 => 5,
+                $reading->sensor_reading <= 696 => 6,
+                $reading->sensor_reading <= 795 => 7,
+                $reading->sensor_reading <= 881 => 8,
+                $reading->sensor_reading <= 976 => 9,
+                $reading->sensor_reading <= 1079 => 10,
+                default => 11,
+            };
+
+            return [
+                'uvIndex' => $uvIndex,
+                'updated_at' => $reading->updated_at->format('Y-m-d H:i:s'),
+            ];
+        });
 
         if (is_null($latestReading)) {
             $latestReading = (object) [
@@ -94,7 +119,6 @@ class UserController extends Controller
 
         $sensorValue = $latestReading->sensor_reading;
 
-        // Map sensor readings to UV Index
         $uvIndex = match (true) {
             $sensorValue < 50 => 0,
             $sensorValue <= 227 => 1,
@@ -111,28 +135,28 @@ class UserController extends Controller
         };
 
         $title = match ($uvIndex) {
-            0, 1, 2 => "Minimal risk:",
-            3, 4, 5 => "Moderate risk:",
-            6, 7 => "High risk:",
-            8, 9, 10 => "Very high risk:",
-            11 => "Extreme risk:",
+            0, 1, 2 => "Risiko minimal:",
+            3, 4, 5 => "Risiko sedang:",
+            6, 7 => "Risiko tinggi:",
+            8, 9, 10 => "Risiko sangat tinggi:",
+            11 => "Risiko ekstrem:",
         };
 
         $description = match ($uvIndex) {
-            0, 1, 2 => "Safe for most skin types. Enjoy the outdoors safely; sunglasses optional.",
-            3, 4, 5 => "Some skin types may burn. Wear sunscreen and sunglasses if outdoors for long.",
-            6, 7 => "Likely to burn with extended exposure. Apply SPF 30+, wear a hat, and find shade midday.",
-            8, 9, 10 => "Skin burns quickly. Use SPF 50+, limit sun exposure 10 AM - 4 PM.",
-            11 => "Skin damage can happen in minutes. Avoid direct sun; wear full protection, including SPF 50+.",
+            0, 1, 2 => "Aman untuk sebagian besar jenis kulit. Nikmati aktivitas luar ruangan dengan aman; kacamata hitam opsional.",
+            3, 4, 5 => "Beberapa jenis kulit mungkin terbakar. Gunakan tabir surya dan kacamata hitam jika berada di luar dalam waktu lama.",
+            6, 7 => "Kemungkinan terbakar dengan paparan yang lama. Gunakan SPF 30+, kenakan topi, dan cari tempat teduh saat siang.",
+            8, 9, 10 => "Kulit mudah terbakar. Gunakan SPF 50+, batasi paparan matahari antara pukul 10 pagi - 4 sore.",
+            11 => "Kerusakan kulit bisa terjadi dalam hitungan menit. Hindari paparan langsung matahari; gunakan perlindungan penuh, termasuk SPF 50+.",
         };
 
         $userId = Auth::id();
 
-        // Get skin type info
         $skinTypeInfo = $this->getSkinTypeInfo($userId);
 
         return view('user.index', array_merge([
             'latestReading' => $latestReading,
+            'chartData' => $chartData,
             'uvIndex' => $uvIndex,
             'title' => $title,
             'description' => $description,
@@ -176,7 +200,6 @@ class UserController extends Controller
     public function submit_fitzpatrick_test(Request $request)
     {
         try {
-            // Validate all questions
             $data = $request->validate([
                 'question1' => 'required|integer|between:0,4',
                 'question2' => 'required|integer|between:0,4',
@@ -190,10 +213,8 @@ class UserController extends Controller
                 'question10' => 'required|integer|between:0,4',
             ]);
 
-            // Calculate the total score
             $totalScore = array_sum($data);
 
-            // Determine the skin type based on the total score
             $skin_type = match (true) {
                 $totalScore <= 6 => 1,
                 $totalScore <= 13 => 2,
@@ -210,17 +231,12 @@ class UserController extends Controller
             ];
 
 
-            // Save the result in the skin_type_result table
             SkinTypeResult::create($resultData);
 
-            // Return the result view with the total score and skin type
             return redirect()->route('user.index')->with('success', 'Fitzpatrick test results have been successfully saved! Your skin type is ' . $skin_type . '.');
-
         } catch (\Illuminate\Validation\ValidationException $e) {
-            // Catch validation errors and return them to the user
             return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            // Catch any other exceptions
             return back()->with('error', 'An error occurred while submitting the test: ' . $e->getMessage())->withInput();
         }
     }
@@ -254,7 +270,19 @@ class UserController extends Controller
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $request->session()->regenerate();
-            return redirect()->route('user.index'); // Mengarahkan ke rute 'user.index'
+
+            $userId = Auth::id();
+
+            $latestSkinType = DB::table('skin_type_result')
+                ->where('user_id', $userId)
+                ->orderBy('updated_at', 'desc')
+                ->first();
+
+            if ($latestSkinType) {
+                return redirect()->route('user.index');
+            } else {
+                return redirect()->route('fitzpatrick_test.fitzpatrick1');
+            }
         }
 
         return back()->withErrors([
@@ -311,7 +339,8 @@ class UserController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
-        $request->session()->invalidate();
+        $request->session()->flush();
+        // $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/');
     }
